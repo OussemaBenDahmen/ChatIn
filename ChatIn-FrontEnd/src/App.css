@@ -1,0 +1,29 @@
+.App {
+  height: 100vh;
+  margin-top: 100px;
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/*****************Basic colors used in the app**********************/
+
+.PrimaryColor {
+  color: #08b3e5 !important;
+}
+.SecondairyColor {
+  color: #14c9cb !important;
+}
+.ThirdColor {
+  color: #2af598 !important;
+}
+.PrimaryBackground {
+  background-color: #08b3e5 !important;
+}
+.SecondairyBackground {
+  background-color: #14c9cb !important;
+}
+.ThirdBackground {
+  background-color: #2af598 !important;
+}

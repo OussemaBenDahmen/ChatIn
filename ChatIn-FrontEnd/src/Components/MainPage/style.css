@@ -1,0 +1,108 @@
+.IndividualChatPage {
+  display: flex;
+  flex-direction: column;
+}
+
+.UserAccountInfoSection {
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: thick solid grey;
+}
+.UsersInfo {
+  display: flex;
+}
+
+.DisconnectBtn {
+  height: 30px;
+}
+
+/********************************/
+.MainSection {
+  display: flex;
+}
+
+/**************************************/
+.ChatSection {
+  width: 100%;
+}
+.FriendInfo {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/**********************************/
+
+.MessageSection {
+  width: 100%;
+  height: 400px;
+  max-width: 100%;
+  max-height: 400px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.MessageBubble {
+  padding: 0 40px;
+  max-width: 60vw;
+  margin: 10px 100px;
+  border-top-right-radius: 100px;
+  border-bottom-left-radius: 100px;
+  transition: all 1s;
+}
+.MessageLeft {
+  align-self: flex-start;
+  border-bottom-right-radius: 20px;
+  background-color: #14c9cb !important;
+}
+.MessageRight {
+  align-self: flex-end;
+  border-top-left-radius: 20px;
+  background-color: #2af598 !important;
+}
+
+/*********************************/
+.input-form {
+  margin: 20px;
+}
+
+.MessageInput {
+  height: 30px;
+  width: 60%;
+}
+
+/************************************/
+.SideBar {
+  padding-top: 10px;
+  min-width: 250px;
+  width: 20vw;
+  border-right: thick solid gray;
+}
+.SideBarLink {
+  border-top: thin solid gray;
+  border-bottom: thin solid gray;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.OnlineUsersSection {
+  overflow-y: scroll;
+  max-height: 40vh;
+}
+@media only screen and (max-width: 600px) {
+  .SideBar {
+    width: 30vw;
+    min-width: 50px;
+    overflow-x: scroll;
+  }
+  .ChatSection {
+    width: 70vw;
+  }
+  .MessageBubble {
+    margin: 10px;
+  }
+}
