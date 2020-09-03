@@ -8,7 +8,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: thick solid grey;
+  box-shadow: 5px 5px 15px lightgrey;
+  background: linear-gradient(to right, #2af5c2, #088ab1);
 }
 .UsersInfo {
   display: flex;
@@ -28,40 +29,89 @@
   width: 100%;
 }
 .FriendInfo {
+  padding: 10px 20px;
   display: flex;
   justify-content: flex-start;
+  box-shadow: 0px 2px 5px lightgrey;
 }
 
 /**********************************/
 
 .MessageSection {
   width: 100%;
-  height: 400px;
+  height: 300px;
   max-width: 100%;
   max-height: 400px;
   overflow-y: scroll;
+  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: none;
+}
+.MessageElement {
+  min-width: 20%;
+  margin: 0 30px;
 }
 
 .MessageBubble {
-  padding: 0 40px;
-  max-width: 60vw;
-  margin: 10px 100px;
+  max-width: 20vw;
+  width: fit-content;
+  height: 40px;
+  padding: 0px 20px;
+  margin-top: 10px;
   border-top-right-radius: 100px;
+  border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
   transition: all 1s;
+  box-shadow: 0px 5px 7px lightgrey;
+  display: flex;
+  align-items: center;
 }
 .MessageLeft {
   align-self: flex-start;
   border-bottom-right-radius: 20px;
-  background-color: #14c9cb !important;
+  display: flex;
+  justify-content: space-around;
 }
 .MessageRight {
   align-self: flex-end;
   border-top-left-radius: 20px;
-  background-color: #2af598 !important;
+  display: flex;
+  justify-content: space-around;
+}
+
+/*************Typing Animation******************/
+
+@keyframes Typing {
+  0% {
+    opacity: 0%;
+  }
+  50% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}
+
+/*********************************/
+.TypingMessage {
+  color: grey;
+  margin-left: 40px;
+  animation: Typing 1s infinite;
+}
+.messageInfo {
+  margin-right: 30px;
+  margin-left: 30px;
+}
+.UserName {
+  color: grey;
+  width: 10%;
+}
+.MessageDate {
+  color: rgb(161, 159, 159);
+  font-size: 0.8rem;
 }
 
 /*********************************/
@@ -79,16 +129,51 @@
   padding-top: 10px;
   min-width: 250px;
   width: 20vw;
-  border-right: thick solid gray;
+  box-shadow: 5px 0px 5px lightgrey;
 }
 .SideBarLink {
-  border-top: thin solid gray;
-  border-bottom: thin solid gray;
+  cursor: pointer;
+  box-shadow: 5px 0px 5px lightgrey;
   height: 60px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  color: black;
+  text-decoration: none;
+  transition: all 1s;
 }
+.GroupeSection {
+  max-height: 250px;
+  overflow: scroll;
+}
+.AddGroupeBtn:hover .AddGroupeImg {
+  filter: opacity(0.6);
+}
+.AddGroupeImg {
+  filter: opacity(0.2);
+  transition: all 1s;
+}
+
+.SideBarLink:hover {
+  background-color: #2af5c2;
+  color: #7308b1;
+}
+
+.UserLink {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.UserImage {
+  width: 40px;
+  border-radius: 100%;
+}
+.ProfileImage {
+  width: 80px;
+  border-radius: 100%;
+  margin-right: 30px;
+}
+
 .OnlineUsersSection {
   overflow-y: scroll;
   max-height: 40vh;

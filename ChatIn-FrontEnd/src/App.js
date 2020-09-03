@@ -5,15 +5,16 @@ import IndividualChat from "./Components/MainPage/IndividualChat";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SignIn from "./Components/LogIn/Login";
 import SignUp from "./Components/SignUp/SignUp";
-//import Axios from "axios";
+//import { GetLoggedUser } from "./ApiRequests/GetLoggedUser";
+import { useDispatch } from "react-redux";
 
 function App() {
   const socket = socketIo.connect("http://localhost:5000");
-
+  const dispatch = useDispatch();
   useEffect(() => {
     socket.emit("Log");
     socket.on("LogIn-Notification", (data) => console.log(data));
-  }, [socket]);
+  }, [socket, dispatch]);
   return (
     <div className="App">
       <Router>

@@ -1,15 +1,26 @@
 const MsgModel = require("../Models/MsgModel");
+exports.post = (data, res) => {
+  const newMsg = new MsgModel({
+    senderId: data.User,
+    value: data.myMessage,
+    recieverId: data.recieverId,
+    groupeId: data.groupeId,
+  });
 
-module.exports = {
-  get: (req, res) => {
-    MsgModel.find().then((data) => {
-      const Mesages = data.map((el) => el.value);
-      console.log(Mesages);
-      res.send(Mesages);
-    });
-  },
-  post: (req, res) => {
-    const newMsg = new MsgModel(req.body);
-    newMsg.save();
-  },
+  newMsg.save().then((data) =>
+    MsgModel.findById({ _id: data._id })
+      .populate("senderId recieverId groupeId")
+      .then((msg) => {
+        res(msg);
+      })
+  );
+};
+
+exports.get = async (req, res) => {
+  const AllMessages = await MsgModel.find().populate(
+    "senderId recieverId groupeId"
+  );
+  res = AllMessages;
+
+  return res;
 };

@@ -3,8 +3,6 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -12,8 +10,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Axios from "axios";
-import { LoginApiRequest } from "../../Actions/Login";
+//import Axios from "axios";
+import { LoginApiRequest } from "../../ApiRequests/Login";
 import { useDispatch } from "react-redux";
 
 function Copyright() {
@@ -22,9 +20,8 @@ function Copyright() {
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
         ChatIn
-      </Link>{" "}
+      </Link>
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
@@ -49,9 +46,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
-  const [Coords, setCoords] = useState({ name: "", password: "" });
-
+export default function SignIn(props) {
+  //const User = useSelector((state) => state.User);
+  const [Coords, setCoords] = useState({ UserName: "", Password: "" });
+  const dispatch = useDispatch();
   const classes = useStyles();
 
   return (
@@ -64,19 +62,19 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <div>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="User Name"
             name="email"
             autoComplete="email"
             autoFocus
             onChange={(e) => {
-              Coords.name = e.target.value;
+              Coords.UserName = e.target.value;
               setCoords(Coords);
               console.log(Coords);
             }}
@@ -92,15 +90,11 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
             onChange={(e) => {
-              Coords.password = e.target.value;
+              Coords.Password = e.target.value;
 
               setCoords(Coords);
               console.log(Coords);
             }}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
           />
           <Button
             fullWidth
@@ -109,24 +103,19 @@ export default function SignIn() {
             className={classes.submit}
             onClick={(e) => {
               e.preventDefault();
-              LoginApiRequest(Coords);
+              dispatch(LoginApiRequest(Coords));
             }}
           >
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="./SignUp" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
           </Grid>
-        </form>
+        </div>
       </div>
       <Box mt={8}>
         <Copyright />

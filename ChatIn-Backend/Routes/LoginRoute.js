@@ -1,31 +1,42 @@
 const express = require("express");
-const db = require("../Config");
+
 const UserModel = require("../Models/UsersModel");
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
 router.post("/Login", (req, res) => {
-  console.log(req.body);
-  UserModel.find({ name: req.body.name, password: req.body.password }).then(
-    (data) => {
-      if (data.length === 0) {
-        res.status(500);
-      } else {
-        const token = jwt.sign({ ...data[0] }, process.env.SECRET_KEY);
-        console.log(token);
-        res.cookie("token", token, { httpOnly: "true" });
-        const mydata = { name: data[0].name, password: data[0].password };
-        res.json(mydata);
-      }
+  UserModel.find({
+    UserName: req.body.UserName,
+    Password: req.body.Password,
+  }).then((data) => {
+    if (data.length === 0) {
+      res.status(500).json({ message: "Not Found" });
+      console.log("notfound");
     }
-  );
+    const mydata = { ...data[0]._doc };
+    console.log(mydata);
+    const token = jwt.sign(mydata, process.env.SECRET_KEY);
+    res.cookie("token", token, { httpOnly: "true" });
+    res.status(200).json(mydata);
+  });
 });
 
-router.post("/add", (req, res) => {
+router.post("/Logout", (req, res) => {
+  console.log(req.body);
+  res.cookie("token", "", { maxAge: -0 });
+  res.status(200).json({ message: "goodbye" });
+});
+
+router.post("/SignUp", (req, res) => {
+  console.log(res.body);
   let newUser = new UserModel(req.body);
-  newUser.save();
+  newUser.role = "User";
   console.log("object", newUser);
+  const token = jwt.sign({ ...newUser }, process.env.SECRET_KEY);
+  res.cookie("token", token, { httpOnly: "true" });
+  res.send(newUser);
+  newUser.save();
 });
 
 module.exports = router;
