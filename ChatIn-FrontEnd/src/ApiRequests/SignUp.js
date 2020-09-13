@@ -7,7 +7,6 @@ export const SignUpApiRequest = (User) => {
     Axios.post(ServerURI + "/ChatIn/SignUp", User, {
       withCredentials: true,
     }).then((res) => {
-      console.log(res.data);
       dispatch(GetUserAction(res.data));
       window.location.assign("/IndvidualChat");
     });

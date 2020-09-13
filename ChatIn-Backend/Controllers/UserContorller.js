@@ -11,7 +11,7 @@ module.exports = {
   edit: (req, res) => {
     UserModel.findByIdAndUpdate(
       { _id: req.params.id },
-      req.body,
+      { $set: req.body },
       (err, data) => {
         res.json(data);
       }

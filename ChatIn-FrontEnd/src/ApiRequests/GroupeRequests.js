@@ -2,6 +2,7 @@ import {
   GetAllGroupesAction,
   CreateGroupesAction,
   DeleteGroupesAction,
+  EditGroupesAction,
 } from "../Actions/GroupeActions";
 
 const Axios = require("axios");
@@ -22,7 +23,7 @@ export const CreateGroupe = (Groupe) => {
 };
 
 export const EditGroupe = (Groupe) => {
-  return () =>
+  return (dispatch) =>
     Axios.put(
       ServerURI + `/Groupes/Edit/${Groupe.GroupeId}`,
       {
@@ -30,7 +31,7 @@ export const EditGroupe = (Groupe) => {
         Users: Groupe.CheckedUsers,
       },
       { withCredentials: true }
-    ).then((res) => console.log(res.data));
+    ).then((res) => dispatch(EditGroupesAction(res.data)));
 };
 
 export const DeleteGroupe = (GroupeId) => {

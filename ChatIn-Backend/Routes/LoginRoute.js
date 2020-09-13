@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/Login", (req, res) => {
   UserModel.find({
-    UserName: req.body.UserName,
+    UserName: req.body.UserName.toLowerCase(),
     Password: req.body.Password,
   }).then((data) => {
     if (data.length === 0) {
@@ -29,13 +29,14 @@ router.post("/Logout", (req, res) => {
 });
 
 router.post("/SignUp", (req, res) => {
-  console.log(res.body);
-  let newUser = new UserModel(req.body);
+  const Profile = { ...req.body };
+  Profile.UserName = Profile.UserName.toLowerCase();
+  let newUser = new UserModel(Profile);
   newUser.role = "User";
   console.log("object", newUser);
   const token = jwt.sign({ ...newUser }, process.env.SECRET_KEY);
   res.cookie("token", token, { httpOnly: "true" });
-  res.send(newUser);
+  res.json(newUser);
   newUser.save();
 });
 

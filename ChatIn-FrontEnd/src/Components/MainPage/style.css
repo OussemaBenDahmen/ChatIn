@@ -6,6 +6,7 @@
 .UserAccountInfoSection {
   padding: 30px;
   display: flex;
+  height: 100px;
   justify-content: space-between;
   align-items: center;
   box-shadow: 5px 5px 15px lightgrey;
@@ -26,7 +27,9 @@
 
 /**************************************/
 .ChatSection {
-  width: 100%;
+  width: 85vw;
+  margin-left: 15%;
+  margin-right: 0;
 }
 .FriendInfo {
   padding: 10px 20px;
@@ -37,12 +40,17 @@
 
 /**********************************/
 
+.MessageSection::-webkit-scrollbar {
+  display: none;
+}
+/*********************************/
 .MessageSection {
   width: 100%;
-  height: 300px;
+  height: 350px;
   max-width: 100%;
   max-height: 400px;
   overflow-y: scroll;
+
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
@@ -123,13 +131,20 @@
   height: 30px;
   width: 60%;
 }
-
+/***********************************/
+.SideDrawer {
+  position: absolute;
+  top: 100px;
+  background: none;
+}
 /************************************/
 .SideBar {
   padding-top: 10px;
   min-width: 250px;
+  height: 83vh;
   width: 20vw;
   box-shadow: 5px 0px 5px lightgrey;
+  background: rgb(216, 233, 241);
 }
 .SideBarLink {
   cursor: pointer;
@@ -141,6 +156,9 @@
   color: black;
   text-decoration: none;
   transition: all 1s;
+}
+.GroupeSection::-webkit-scrollbar {
+  display: none;
 }
 .GroupeSection {
   max-height: 250px;
@@ -166,6 +184,7 @@
 }
 .UserImage {
   width: 40px;
+  height: 40px;
   border-radius: 100%;
 }
 .ProfileImage {
@@ -176,18 +195,69 @@
 
 .OnlineUsersSection {
   overflow-y: scroll;
-  max-height: 40vh;
+  max-height: 50vh;
+}
+.OnlineUsersSection::-webkit-scrollbar {
+  display: none;
+}
+
+.EditProfileBtn {
+  margin-left: 30px;
+  width: auto;
+  height: fit-content;
+  border: none;
+  background: none;
+  outline: none;
+  align-self: center;
+  transition: all 0.4s;
+}
+.EditProfileBtn:hover {
+  filter: invert(1);
+}
+
+.SideBarBtn {
+  border: none;
+  background: none;
+  outline: none;
+  transition: all 0.4s;
+}
+.SideBarBtn:hover {
+  filter: invert(1);
+}
+.UsersCheckbox {
+  display: flex;
+  justify-content: space-around;
+}
+.ModalInput {
+  width: 90%;
+  padding: 10px;
+  border: none;
+  border-bottom: thin solid rgb(224, 216, 216);
+  background: rgb(243, 239, 239);
+  border-radius: 2px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 @media only screen and (max-width: 600px) {
-  .SideBar {
-    width: 30vw;
-    min-width: 50px;
-    overflow-x: scroll;
-  }
   .ChatSection {
-    width: 70vw;
+    width: 100vw;
+    margin-left: -40px;
   }
   .MessageBubble {
     margin: 10px;
+  }
+}
+@media only screen and (max-width: 900px) and (min-width: 601px) {
+  .ChatSection {
+    width: 68vw;
+    margin-right: 0;
+    margin-left: auto;
+  }
+}
+@media only screen and (max-width: 1200px) and (min-width: 901px) {
+  .ChatSection {
+    width: 75vw;
+    margin-right: 0;
+    margin-left: auto;
   }
 }

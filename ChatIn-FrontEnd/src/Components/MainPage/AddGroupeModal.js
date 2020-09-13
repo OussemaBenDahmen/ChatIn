@@ -1,139 +1,143 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import { useSpring, animated } from "react-spring/web.cjs"; // web.cjs is required for IE 11 support
 import { useSelector, useDispatch } from "react-redux";
-
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import Typography from "@material-ui/core/Typography";
 import { CreateGroupe } from "../../ApiRequests/GroupeRequests";
+import { UpdateSocket } from "../../Sockets/UpdateSockets";
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
   },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: "none",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    minHeight: "300px",
-    minWidth: "300px",
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
   },
-}));
+});
 
-const Fade = React.forwardRef(function Fade(props, ref) {
-  const { in: open, children, onEnter, onExited, ...other } = props;
-  const style = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: open ? 1 : 0 },
-    onStart: () => {
-      if (open && onEnter) {
-        onEnter();
-      }
-    },
-    onRest: () => {
-      if (!open && onExited) {
-        onExited();
-      }
-    },
-  });
-
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
   return (
-    <animated.div ref={ref} style={style} {...other}>
-      {children}
-    </animated.div>
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
   );
 });
 
-Fade.propTypes = {
-  children: PropTypes.element,
-  in: PropTypes.bool.isRequired,
-  onEnter: PropTypes.func,
-  onExited: PropTypes.func,
-};
+const DialogContent = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    width: "40vw",
+    height: "20vh",
+    padding: theme.spacing(2, 4, 5),
+  },
+}))(MuiDialogContent);
 
-export default function AddGroupeModal(props) {
+const DialogActions = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions);
+
+export default function CustomizedDialogs(props) {
   const dispatch = useDispatch();
   const [CheckedUsers, setCheckedUsers] = useState([]);
   const [GroupeName, setGroupeName] = useState("");
-  const classes = useStyles();
   const User = useSelector((state) => state.User);
   const AllUsers = useSelector((state) => state.AllUsers);
 
   return (
     <div>
-      <Modal
-        aria-labelledby="spring-modal-title"
-        aria-describedby="spring-modal-description"
-        className={classes.modal}
-        open={props.open}
+      <Dialog
         onClose={props.handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
+        aria-labelledby="customized-dialog-title"
+        open={props.open}
       >
-        <Fade in={props.open}>
-          <div className={classes.paper}>
+        <DialogTitle id="customized-dialog-title" onClose={props.handleClose}>
+          Create a Groupe
+        </DialogTitle>
+        <DialogContent dividers>
+          <div>
             <input
               type="text"
+              className="ModalInput"
               placeholder="Groupe Name"
               onChange={(e) => {
-                console.log(GroupeName);
                 setGroupeName(e.target.value);
               }}
             />
-            <div className="UsesersList">
-              {AllUsers.filter((el) => el._id !== User._id).map((el) => (
-                <>
-                  <input
-                    type="checkbox"
-                    name="User"
-                    value={el.UserName}
-                    onChange={(e) => {
-                      let isChecked = e.target.checked;
-                      let SelectedUser = AllUsers.filter(
-                        (el) => el.UserName === e.target.value
-                      )[0];
-                      if (isChecked) {
-                        setCheckedUsers([...CheckedUsers, SelectedUser]);
-                      } else {
-                        let GroupeUsers = CheckedUsers.filter(
-                          (el) => el.UserName !== e.target.value
-                        );
-                        setCheckedUsers(GroupeUsers);
-                      }
-                      console.log(CheckedUsers);
-                    }}
-                  />
-                  <label htmlfor="User">{el.UserName}</label>
-                </>
-              ))}
+            <div className={"UsersList"}>
+              <h2>Users</h2>
+              <div className="UsersCheckbox">
+                {AllUsers.filter((el) => el._id !== User._id).map((el) => (
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="User"
+                      value={el.UserName}
+                      onChange={(e) => {
+                        let isChecked = e.target.checked;
+                        let SelectedUser = AllUsers.filter(
+                          (el) => el.UserName === e.target.value
+                        )[0];
+                        if (isChecked) {
+                          setCheckedUsers([...CheckedUsers, SelectedUser]);
+                        } else {
+                          let GroupeUsers = CheckedUsers.filter(
+                            (el) => el.UserName !== e.target.value
+                          );
+                          setCheckedUsers(GroupeUsers);
+                        }
+                      }}
+                    />
+                    <label htmlfor="User">{el.UserName}</label>
+                  </div>
+                ))}
+              </div>
             </div>
-            <button
-              onClick={() => {
-                console.log("groupe added");
-                dispatch(
-                  CreateGroupe({
-                    GroupeName,
-                    CheckedUsers,
-                  })
-                );
-                setCheckedUsers([]);
-                setGroupeName("");
-                props.handleClose();
-              }}
-            >
-              Create
-            </button>
           </div>
-        </Fade>
-      </Modal>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => {
+              dispatch(
+                CreateGroupe({
+                  GroupeName,
+                  CheckedUsers,
+                })
+              );
+              setCheckedUsers([]);
+              setGroupeName("");
+              UpdateSocket();
+              props.handleClose();
+            }}
+            color="primary"
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

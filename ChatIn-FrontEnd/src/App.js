@@ -7,6 +7,7 @@ import SignIn from "./Components/LogIn/Login";
 import SignUp from "./Components/SignUp/SignUp";
 //import { GetLoggedUser } from "./ApiRequests/GetLoggedUser";
 import { useDispatch } from "react-redux";
+import EditProfile from "./Components/EditProfilePage";
 
 function App() {
   const socket = socketIo.connect("http://localhost:5000");
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route path="/IndvidualChat">
             <IndividualChat />
+          </Route>
+          <Route path="/EditProfile">
+            <EditProfile />
           </Route>
         </Switch>
       </Router>

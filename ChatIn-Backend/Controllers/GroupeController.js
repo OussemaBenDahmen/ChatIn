@@ -1,5 +1,6 @@
 const GroupeModel = require("../Models/GroupeModel");
 const jwt = require("jsonwebtoken");
+const { findById } = require("../Models/GroupeModel");
 
 module.exports = {
   Create: (req, res) => {
@@ -24,18 +25,19 @@ module.exports = {
   Edit: (req, res) => {
     GroupeModel.findByIdAndUpdate(
       { _id: req.params.id },
+
       { $set: req.body },
-      (err, data) => {
-        if (err) {
-          console.log(err);
-        }
-        res.json(data);
-      }
+      { new: true }
+    ).then((data) =>
+      GroupeModel.findById({ _id: data._id })
+        .populate("GroupeCreator Users", "_id UserName")
+        .then((data) => {
+          res.json(data);
+        })
     );
   },
   Delete: (req, res) => {
     GroupeModel.findByIdAndDelete({ _id: req.params.id }).then((data) => {
-      console.log(data);
       res.json(data);
     });
   },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import SideBar from "./SideBar";
+
 import Button from "@material-ui/core/Button";
 import socketIo from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,35 +11,49 @@ import {
 } from "../../Sockets/MessageSockets";
 import { GetLoggedUser } from "../../ApiRequests/GetLoggedUser";
 import { GetAllUsers } from "../../ApiRequests/GetAllUsers";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import { Link } from "react-router-dom";
+import { ServerURI } from "../../ApiRequests/Config";
+import ErrorDialogue from "../ErrorDialogue/ErrorDialogue";
+import SwipeableTemporaryDrawer from "./SideDrawer";
+
+const ImagePlaceHolder =
+  "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
 const socket = socketIo.connect("http://localhost:5000");
 
 export const IndividualChat = () => {
   const User = useSelector((state) => state.User);
   const AllUsers = useSelector((state) => state.AllUsers);
+  const AllGroupes = useSelector((state) => state.AllGroupes);
   const dispatch = useDispatch();
   const [Message, setMessage] = useState("");
   const [AllMessages, setAllMessages] = useState([]);
   const [Typing, setTyping] = useState();
-
-  const initialValue = AllUsers.filter((el) => el._id !== User._id)[0];
-  console.log({ ...initialValue }._id);
-
-  const [recieverId, setrecieverId] = useState({ ...initialValue }._id);
+  const [SelectedUser, setSelectedUser] = useState({});
+  const [recieverId, setrecieverId] = useState("");
   const [GroupeID, setGroupeID] = useState("");
   const messagesEndRef = useRef(null);
+  const [ErrorOpen, setErrorOpen] = useState(false);
+  const [ErrorMessage, setErrorMessage] = useState("Fill the form please");
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
-  let FriendName = { ...AllUsers.filter((el) => el._id === recieverId)[0] }
-    .UserName;
+
+  let GrpName = { ...AllGroupes.filter((el) => el._id === GroupeID)[0] }
+    .GroupeName;
   const GetConversation = (id) => {
     setrecieverId(id);
+    setTimeout(scrollToBottom, 0);
+    const Selected = { ...AllUsers.filter((el) => el._id === id)[0] };
+    setSelectedUser(Selected);
   };
   const GetGroupConversation = (Groupeid) => {
     setGroupeID(Groupeid);
-    console.log(Groupeid);
+    setTimeout(scrollToBottom, 0);
   };
+
+  // eslint-disable-next-line
   const FilteredMessages = AllMessages.filter((el) => {
     if (GroupeID !== "" && el.groupeId) {
       return el.groupeId._id === GroupeID;
@@ -50,7 +64,7 @@ export const IndividualChat = () => {
       );
     }
   });
-  console.log(FilteredMessages);
+
   const SendMessage = (e) => {
     if (GroupeID === "") {
       SendMessageSocket({ message: Message, recieverId: recieverId });
@@ -60,29 +74,47 @@ export const IndividualChat = () => {
       setMessage("");
     }
   };
+
+  const handleErrorOpen = () => {
+    setErrorOpen(true);
+  };
+  const handleErrorClose = () => {
+    setErrorOpen(false);
+  };
   useEffect(() => {
     dispatch(GetAllUsers());
-
+    socket.on("TypingNow", (data) => setTyping(data.Typing));
     socket.emit("join", "hello");
+    socket.on("Reload", (data) => {
+      window.location.reload(true);
+    });
     socket.on("messages", (data) => {
       setAllMessages(data);
       setTyping(false);
       scrollToBottom();
     });
-    socket.on("TypingNow", (data) => setTyping(data.Typing));
     dispatch(GetLoggedUser());
   }, [dispatch]);
-  console.log(AllMessages);
+
   return (
     <div className="IndividualChatPage">
       <header className="UserAccountInfoSection">
         <div className="UsersInfo">
           <img
             className="ProfileImage"
-            src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+            src={
+              User.picture !== undefined
+                ? `${ServerURI}/${User.picture}`
+                : ImagePlaceHolder
+            }
             alt="UserPic"
           />
           <h2>{User.UserName}</h2>
+          <Link to="/EditProfile">
+            <button className="EditProfileBtn">
+              <EditOutlinedIcon />
+            </button>
+          </Link>
         </div>
         <Button
           variant="contained"
@@ -95,19 +127,25 @@ export const IndividualChat = () => {
         </Button>
       </header>
       <main className="MainSection">
-        <SideBar
+        <SwipeableTemporaryDrawer
+          ImagePlaceHolder={ImagePlaceHolder}
           setMessage={setMessage}
           GetConversation={GetConversation}
           GetGroupConversation={GetGroupConversation}
         />
+
         <div className="ChatSection">
           <div className="FriendInfo">
             <img
               className="ProfileImage"
-              src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+              src={
+                SelectedUser.picture === undefined
+                  ? ImagePlaceHolder
+                  : `${ServerURI}/${SelectedUser.picture}`
+              }
               alt="FriendsPic"
             />
-            <h3>{FriendName}</h3>
+            <h3>{SelectedUser.UserName || GrpName}</h3>
           </div>
           <div className="MessageSection">
             {FilteredMessages.length !== 0 ? (
@@ -175,7 +213,7 @@ export const IndividualChat = () => {
                 <p>say hello</p>
               </div>
             )}
-            {Typing ? (
+            {Typing && Message === "" ? (
               <p className="MessageLeft TypingMessage">Typing ... </p>
             ) : null}
             <div ref={messagesEndRef} />
@@ -192,6 +230,7 @@ export const IndividualChat = () => {
                 }, 5000)
               }
               onChange={(e) => {
+                setTyping(false);
                 TypingSocket({ Typing: true });
                 setMessage(e.target.value);
               }}
@@ -203,10 +242,17 @@ export const IndividualChat = () => {
               onClick={(e) => {
                 e.preventDefault();
                 if (Message !== "") {
-                  SendMessage();
+                  if (recieverId === "" && GroupeID === "") {
+                    setErrorMessage("Choose a user or a groupe first");
+                    handleErrorOpen();
+                    setMessage("");
+                  } else if (recieverId !== "" || GroupeID !== "") {
+                    SendMessage();
+                  }
                   setTyping(false);
                 } else {
-                  alert("type something");
+                  setErrorMessage("Type something before sending");
+                  handleErrorOpen();
                 }
               }}
             >
@@ -214,6 +260,12 @@ export const IndividualChat = () => {
             </Button>
           </form>
         </div>
+
+        <ErrorDialogue
+          ErrorOpen={ErrorOpen}
+          handleClose={handleErrorClose}
+          Message={ErrorMessage}
+        />
       </main>
     </div>
   );

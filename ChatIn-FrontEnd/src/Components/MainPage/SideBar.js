@@ -8,6 +8,10 @@ import { GetLoggedUser } from "../../ApiRequests/GetLoggedUser";
 import AddGroupeModal from "./AddGroupeModal";
 import EditGroupeModal from "./EditGroupeModal";
 import { GetAllGroupes, DeleteGroupe } from "../../ApiRequests/GroupeRequests";
+import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import { UpdateSocket } from "../../Sockets/UpdateSockets";
+import { ServerURI } from "../../ApiRequests/Config";
 
 export const SideBar = (props) => {
   const dispatch = useDispatch();
@@ -68,7 +72,6 @@ export const SideBar = (props) => {
 
           {AllGroupes.map((el, i) => (
             <>
-              {" "}
               <Link
                 className="SideBarLink"
                 key={i}
@@ -79,31 +82,34 @@ export const SideBar = (props) => {
               >
                 <div className="GroupeName">{el.GroupeName}</div>
                 {el.GroupeCreator._id === User._id ? (
-                  <>
+                  <div>
                     <button
+                      className="SideBarBtn"
                       onClick={(e) => {
                         dispatch(DeleteGroupe(el._id));
+                        UpdateSocket();
                       }}
                     >
-                      Delete
+                      <DeleteOutlineRoundedIcon />
                     </button>
 
                     <button
+                      className="SideBarBtn"
                       onClick={() => {
                         setGroupe(el);
                         handleEditOpen();
                       }}
                     >
-                      Edit
+                      <EditOutlinedIcon />
                     </button>
-                  </>
+                  </div>
                 ) : null}
-              </Link>{" "}
+              </Link>
             </>
           ))}
         </div>
+        <h2>Users</h2>
         <div className="OnlineUsersSection">
-          <h2>Online Users</h2>
           {AllUsers.filter((el) => el._id !== User._id).map((el, i) => (
             <Link
               to="/IndvidualChat"
@@ -118,7 +124,11 @@ export const SideBar = (props) => {
             >
               <img
                 className="UserImage"
-                src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+                src={
+                  el.picture !== undefined
+                    ? `${ServerURI}/${el.picture}`
+                    : props.ImagePlaceHolder
+                }
                 alt="UserPic"
               />
               <h5 className="SideBarUserName">{el.UserName}</h5>

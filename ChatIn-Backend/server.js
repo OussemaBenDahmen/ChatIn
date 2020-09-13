@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+
 const cookieParser = require("cookie-parser");
 const LoginRoute = require("./Routes/LoginRoute");
 const MsgRoute = require("./Routes/MsgRoute");
@@ -19,11 +22,23 @@ let msgs = [];
 require("dotenv").config();
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.static("Public"));
 
+/*************************************/
+// SET STORAGE
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "Public");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const Upload = multer({ storage: storage });
 /******************Mongoose Config**********************/
 
 //Connection to the DataBase
-const mongoose = require("mongoose");
 
 mongoose.connect(
   process.env.MongoURI,
@@ -40,6 +55,8 @@ mongoose.connect(
 //Access-Controls
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "http://192.168.1.171:3000");
+
   res.header("Access-Control-Allow-Credentials", true);
   res.header(
     "Access-Control-Allow-Headers",
@@ -61,6 +78,18 @@ app.use("/ChatIn/Msgs", MsgRoute);
 
 //Groupes Middleware
 app.use("/Groupes", GroupeRoute);
+
+//Upload Image MiddleWare
+app.put("/UploadImage", Upload.single("Picture"), (req, res) => {
+  const myFile = req.file;
+
+  const myToken = req.cookies.token;
+  let decoded = jwt.verify(myToken, process.env.SECRET_KEY);
+  UserModel.findByIdAndUpdate(
+    { _id: decoded._id },
+    { $set: { picture: myFile.originalname } }
+  ).then(res.send("done"));
+});
 
 const server = app.listen(process.env.PORT, () => {
   console.log("server listening on " + process.env.PORT);
@@ -100,7 +129,6 @@ io.on("connection", (socket) => {
       recieverId: Reciever,
     };
     post(mydata, (data) => {
-      console.log(data);
       msgs.push(data);
       socket.broadcast.emit("messages", msgs);
     });
@@ -125,7 +153,6 @@ io.on("connection", (socket) => {
         groupeId: data[0],
       };
       await post(mydata, (data) => {
-        console.log(data);
         msgs.push(data);
         socket.broadcast.emit("messages", msgs);
       });
@@ -136,6 +163,10 @@ io.on("connection", (socket) => {
 
   socket.on("Typing", (data) => {
     socket.broadcast.emit("TypingNow", { Typing: data.Typing });
+  });
+
+  socket.on("Update", (data) => {
+    io.emit("Reload", { reload: true });
   });
 
   socket.on("disconnect", () => {

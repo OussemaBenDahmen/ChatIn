@@ -7,7 +7,6 @@ export const GetLoggedUser = () => {
     Axios.get(ServerURI + "/users/GetLogged", {
       withCredentials: true,
     }).then((res) => {
-      console.log("efze");
       dispatch(GetUserAction(res.data));
     });
 };
