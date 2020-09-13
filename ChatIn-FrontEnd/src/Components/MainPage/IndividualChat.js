@@ -20,7 +20,7 @@ import SwipeableTemporaryDrawer from "./SideDrawer";
 const ImagePlaceHolder =
   "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
-const socket = socketIo.connect("http://localhost:5000");
+const socket = socketIo.connect(ServerURI);
 
 export const IndividualChat = () => {
   const User = useSelector((state) => state.User);

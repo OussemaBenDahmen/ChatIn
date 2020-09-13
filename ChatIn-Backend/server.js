@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const cors = require("cors");
 
 const cookieParser = require("cookie-parser");
 const LoginRoute = require("./Routes/LoginRoute");
@@ -53,18 +54,23 @@ mongoose.connect(
 /****************************************/
 
 //Access-Controls
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Origin", "http://192.168.1.171:3000");
 
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-  next();
-});
+const whitelist = ["http://192.168.1.7:3000", "http://localhost:3000"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
+app.options("*", cors());
+
 /****************Middlewares*****************/
 
 //Login Middleware
@@ -91,7 +97,7 @@ app.put("/UploadImage", Upload.single("Picture"), (req, res) => {
   ).then(res.send("done"));
 });
 
-const server = app.listen(process.env.PORT, () => {
+const server = app.listen(5000, ["192.168.1.7" || "localhost"], () => {
   console.log("server listening on " + process.env.PORT);
   console.log("http://localhost:" + process.env.PORT);
 });
