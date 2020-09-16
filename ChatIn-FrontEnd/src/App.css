@@ -22,8 +22,13 @@
   background-color: #08b3e5 !important;
 }
 .SecondairyBackground {
-  background-color: #14c9cb !important;
+  background-color: rgb(216, 233, 241) !important;
 }
 .ThirdBackground {
   background-color: #2af598 !important;
+}
+@media only screen and (max-width: 600px) {
+  .App {
+    height: 100vh;
+  }
 }

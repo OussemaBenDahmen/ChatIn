@@ -12,6 +12,8 @@ import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { UpdateSocket } from "../../Sockets/UpdateSockets";
 import { ServerURI } from "../../ApiRequests/Config";
+import AddIcon from "@material-ui/icons/Add";
+import ErrorDialogue from "../ErrorDialogue/ErrorDialogue";
 
 export const SideBar = (props) => {
   const dispatch = useDispatch();
@@ -40,6 +42,18 @@ export const SideBar = (props) => {
   };
   /*************************/
 
+  /**************** */
+  const [ErrorOpen, setErrorOpen] = useState(false);
+  const [ErrorMessage, setErrorMessage] = useState("Fill the form please");
+
+  const handleErrorOpen = () => {
+    setErrorOpen(true);
+  };
+  const handleErrorClose = () => {
+    setErrorOpen(false);
+  };
+  /**************** */
+
   const User = useSelector((state) => state.User);
   useEffect(() => {
     dispatch(GetAllUsers());
@@ -52,15 +66,15 @@ export const SideBar = (props) => {
         <div className="GroupeSection">
           <h2>Groupes</h2>
           <div className="SideBarLink AddGroupeBtn" onClick={handleOpen}>
-            <img
-              className="AddGroupeImg"
-              src="https://cdn.onlinewebfonts.com/svg/img_27761.png"
-              alt=""
-              width="20px"
-            />
+            <AddIcon fontSize="large" />
             <div className="GroupeName">Create a groupe</div>
           </div>
-          <AddGroupeModal open={open} handleClose={handleClose} />
+          <AddGroupeModal
+            open={open}
+            handleClose={handleClose}
+            handleErrorOpen={handleErrorOpen}
+            setErrorMessage={setErrorMessage}
+          />
           <EditGroupeModal
             key={Groupe._id}
             EditOpen={EditOpen}
@@ -73,7 +87,7 @@ export const SideBar = (props) => {
           {AllGroupes.map((el, i) => (
             <>
               <Link
-                className="SideBarLink"
+                className="SideBarLink GroupeLink"
                 key={i}
                 onClick={() => {
                   props.GetGroupConversation(el._id);
@@ -136,6 +150,11 @@ export const SideBar = (props) => {
           ))}
         </div>
       </div>
+      <ErrorDialogue
+        ErrorOpen={ErrorOpen}
+        handleClose={handleErrorClose}
+        Message={ErrorMessage}
+      />
     </Router>
   );
 };

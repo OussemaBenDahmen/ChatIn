@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import ErrorDialogue from "../ErrorDialogue/ErrorDialogue";
 
 import ChatInLogo from "./ChatInLogo.png";
+import { UpdateSocket } from "../../Sockets/UpdateSockets";
 
 function Copyright() {
   return (
@@ -145,6 +146,7 @@ export default function SignUp() {
                 handleClickOpen();
               } else {
                 dispatch(SignUpApiRequest(User));
+                UpdateSocket();
               }
             }}
           >

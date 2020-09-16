@@ -8,6 +8,6 @@ export const SignUpApiRequest = (User) => {
       withCredentials: true,
     }).then((res) => {
       dispatch(GetUserAction(res.data));
-      window.location.assign("/IndvidualChat");
+      window.location.assign("/");
     });
 };

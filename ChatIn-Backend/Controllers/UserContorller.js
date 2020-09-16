@@ -19,14 +19,12 @@ module.exports = {
   },
   getLogged: (req, res) => {
     let mytoken = req.cookies.token;
-
+    console.log(mytoken);
     let decoded = jwt.verify(mytoken, process.env.SECRET_KEY);
 
-    UserModel.findOne({ _id: decoded._id }, (err, data) => {
-      if (err) {
-        res.status(401).send("err");
-      }
+    UserModel.findById({ _id: decoded._id }).then((data) => {
       res.send(data);
+      console.log(data);
     });
   },
 };

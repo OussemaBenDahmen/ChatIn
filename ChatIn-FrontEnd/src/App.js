@@ -8,9 +8,10 @@ import SignUp from "./Components/SignUp/SignUp";
 //import { GetLoggedUser } from "./ApiRequests/GetLoggedUser";
 import { useDispatch } from "react-redux";
 import EditProfile from "./Components/EditProfilePage";
+import { ServerURI } from "./ApiRequests/Config";
 
 function App() {
-  const socket = socketIo.connect("http://localhost:5000");
+  const socket = socketIo.connect(ServerURI);
   const dispatch = useDispatch();
   useEffect(() => {
     socket.emit("Log");

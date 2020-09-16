@@ -5,15 +5,19 @@
 
 .UserAccountInfoSection {
   padding: 30px;
-  display: flex;
   height: 100px;
+  display: flex;
+
   justify-content: space-between;
   align-items: center;
   box-shadow: 5px 5px 15px lightgrey;
-  background: linear-gradient(to right, #2af5c2, #088ab1);
+  background: #088ab1;
 }
 .UsersInfo {
   display: flex;
+}
+.UsersInfo {
+  color: white;
 }
 
 .DisconnectBtn {
@@ -35,7 +39,7 @@
   padding: 10px 20px;
   display: flex;
   justify-content: flex-start;
-  box-shadow: 0px 2px 5px lightgrey;
+  box-shadow: 0px 2px 3px rgb(235, 234, 234);
 }
 
 /**********************************/
@@ -46,9 +50,9 @@
 /*********************************/
 .MessageSection {
   width: 100%;
-  height: 350px;
+  height: 55vh;
   max-width: 100%;
-  max-height: 400px;
+
   overflow-y: scroll;
 
   scroll-behavior: smooth;
@@ -60,33 +64,36 @@
 .MessageElement {
   min-width: 20%;
   margin: 0 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .MessageBubble {
-  max-width: 20vw;
+  max-width: 40vw;
   width: fit-content;
-  height: 40px;
-  padding: 0px 20px;
+  height: fit-content;
+  min-height: 30px;
   margin-top: 10px;
   border-top-right-radius: 100px;
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
   transition: all 1s;
-  box-shadow: 0px 5px 7px lightgrey;
+  box-shadow: 0px 5px 7px rgba(211, 211, 211, 0.76);
   display: flex;
   align-items: center;
+  padding: 0px 20px;
 }
 .MessageLeft {
   align-self: flex-start;
-  border-bottom-right-radius: 20px;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .MessageRight {
   align-self: flex-end;
-  border-top-left-radius: 20px;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 /*************Typing Animation******************/
@@ -109,10 +116,7 @@
   margin-left: 40px;
   animation: Typing 1s infinite;
 }
-.messageInfo {
-  margin-right: 30px;
-  margin-left: 30px;
-}
+
 .UserName {
   color: grey;
   width: 10%;
@@ -128,34 +132,40 @@
 }
 
 .MessageInput {
-  height: 30px;
+  height: 35px;
   width: 60%;
+  border-radius: 7px;
+  padding-left: 15px;
+  border: thin solid #088ab1;
+  outline: none;
 }
-/***********************************/
-.SideDrawer {
-  position: absolute;
-  top: 100px;
-  background: none;
-}
+
 /************************************/
 .SideBar {
   padding-top: 10px;
   min-width: 250px;
-  height: 83vh;
+  height: 88vh;
   width: 20vw;
   box-shadow: 5px 0px 5px lightgrey;
   background: rgb(216, 233, 241);
 }
 .SideBarLink {
   cursor: pointer;
-  box-shadow: 5px 0px 5px lightgrey;
   height: 60px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   color: black;
   text-decoration: none;
   transition: all 1s;
+  font-size: 1rem;
+}
+.GroupeLink {
+  padding-left: 20px;
+  font-weight: bold;
+}
+.GroupeName {
+  font-size: 0.8rem !important;
 }
 .GroupeSection::-webkit-scrollbar {
   display: none;
@@ -173,22 +183,19 @@
 }
 
 .SideBarLink:hover {
-  background-color: #2af5c2;
+  background-color: #088ab1;
   color: #7308b1;
 }
 
-.UserLink {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-}
 .UserImage {
   width: 40px;
   height: 40px;
   border-radius: 100%;
+  margin: 15px;
 }
 .ProfileImage {
   width: 80px;
+  height: 80px;
   border-radius: 100%;
   margin-right: 30px;
 }
@@ -202,17 +209,18 @@
 }
 
 .EditProfileBtn {
-  margin-left: 30px;
   width: auto;
   height: fit-content;
   border: none;
   background: none;
   outline: none;
   align-self: center;
+  margin: 5px;
   transition: all 0.4s;
+  filter: invert(1);
 }
 .EditProfileBtn:hover {
-  filter: invert(1);
+  filter: invert(0);
 }
 
 .SideBarBtn {
@@ -224,9 +232,14 @@
 .SideBarBtn:hover {
   filter: invert(1);
 }
+
 .UsersCheckbox {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
+}
+.UserModalCheckbox {
+  margin: 10px;
 }
 .ModalInput {
   width: 90%;
@@ -239,12 +252,44 @@
   border-bottom-right-radius: 0;
 }
 @media only screen and (max-width: 600px) {
+  .MessageSection {
+    height: 65vh;
+  }
+  .DisconnectBtn {
+    scale: 0.5;
+  }
+  .UserAccountInfoSection {
+    padding: 3px;
+  }
+  .ProfileImage {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+  }
+
+  .UsersInfo h2 {
+    font-size: 1rem;
+  }
+  .EditProfileBtn {
+    margin: 5px;
+  }
+
+  .FriendInfo {
+    margin: 0;
+    padding: 0;
+  }
+
   .ChatSection {
     width: 100vw;
     margin-left: -40px;
   }
+
   .MessageBubble {
     margin: 10px;
+    width: fit-content;
+    height: fit-content;
+    padding: 0 25px 0 20px;
+    text-align: left;
   }
 }
 @media only screen and (max-width: 900px) and (min-width: 601px) {

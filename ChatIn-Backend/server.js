@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const cors = require("cors");
+const os = require("os");
 
 const cookieParser = require("cookie-parser");
 const LoginRoute = require("./Routes/LoginRoute");
@@ -24,10 +25,12 @@ require("dotenv").config();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static("Public"));
+const myIpAdress = os.networkInterfaces().wlp2s0[0].address; //getting the Pc's Ip +address
 
+let AllowedDomains = ["localhost", `${myIpAdress}`];
 /*************************************/
 // SET STORAGE
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "Public");
   },
@@ -55,7 +58,8 @@ mongoose.connect(
 
 //Access-Controls
 
-const whitelist = ["http://192.168.1.7:3000", "http://localhost:3000"];
+const whitelist = AllowedDomains.map((domain) => `http://${domain}:3000`);
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -69,7 +73,7 @@ app.use(
     credentials: true,
   })
 );
-app.options("*", cors());
+// app.options("*", cors());
 
 /****************Middlewares*****************/
 
@@ -97,7 +101,7 @@ app.put("/UploadImage", Upload.single("Picture"), (req, res) => {
   ).then(res.send("done"));
 });
 
-const server = app.listen(5000, ["192.168.1.7" || "localhost"], () => {
+const server = app.listen(process.env.PORT, ["*", ...AllowedDomains], () => {
   console.log("server listening on " + process.env.PORT);
   console.log("http://localhost:" + process.env.PORT);
 });
@@ -105,7 +109,6 @@ const server = app.listen(5000, ["192.168.1.7" || "localhost"], () => {
 /*************Socket.io*********************/
 //Socket Configuration
 const io = socket(server);
-
 io.on("connection", (socket) => {
   get("req", msgs).then((data) => (msgs = data));
 

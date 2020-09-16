@@ -14,7 +14,7 @@ router.post("/Login", (req, res) => {
       res.status(500).json({ message: "Not Found" });
       console.log("notfound");
     }
-    const mydata = { ...data[0]._doc };
+    const mydata = { ...data[0]._doc }; //getting user's info from the token
     console.log(mydata);
     const token = jwt.sign(mydata, process.env.SECRET_KEY);
     res.cookie("token", token, { httpOnly: "true" });
@@ -33,11 +33,11 @@ router.post("/SignUp", (req, res) => {
   Profile.UserName = Profile.UserName.toLowerCase();
   let newUser = new UserModel(Profile);
   newUser.role = "User";
-  console.log("object", newUser);
+  newUser.save();
   const token = jwt.sign({ ...newUser }, process.env.SECRET_KEY);
   res.cookie("token", token, { httpOnly: "true" });
   res.json(newUser);
-  newUser.save();
+  console.log("emnen", newUser);
 });
 
 module.exports = router;

@@ -15,7 +15,7 @@ import { UpdateSocket } from "../../Sockets/UpdateSockets";
 const styles = (theme) => ({
   root: {
     margin: 0,
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   closeButton: {
     position: "absolute",
@@ -46,9 +46,7 @@ const DialogTitle = withStyles(styles)((props) => {
 const DialogContent = withStyles((theme) => ({
   root: {
     margin: 0,
-    width: "40vw",
-    height: "20vh",
-    padding: theme.spacing(2, 4, 5),
+    padding: theme.spacing(5, 1, 5),
   },
 }))(MuiDialogContent);
 
@@ -69,6 +67,7 @@ export default function CustomizedDialogs(props) {
   return (
     <div>
       <Dialog
+        maxWidth="s"
         onClose={props.handleEditClose}
         aria-labelledby="customized-dialog-title"
         open={props.EditOpen}
@@ -94,7 +93,7 @@ export default function CustomizedDialogs(props) {
               <h2>Users</h2>
               <div className="UsersCheckbox">
                 {AllUsers.filter((el) => el._id !== User._id).map((el) => (
-                  <div>
+                  <div className="UserModalCheckbox">
                     <input
                       key={el._id}
                       type="checkbox"

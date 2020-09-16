@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { ServerURI } from "../../ApiRequests/Config";
 import ErrorDialogue from "../ErrorDialogue/ErrorDialogue";
 import SwipeableTemporaryDrawer from "./SideDrawer";
+import SendIcon from "@material-ui/icons/Send";
 
 const ImagePlaceHolder =
   "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
@@ -82,6 +83,7 @@ export const IndividualChat = () => {
     setErrorOpen(false);
   };
   useEffect(() => {
+    dispatch(GetLoggedUser());
     dispatch(GetAllUsers());
     socket.on("TypingNow", (data) => setTyping(data.Typing));
     socket.emit("join", "hello");
@@ -93,8 +95,7 @@ export const IndividualChat = () => {
       setTyping(false);
       scrollToBottom();
     });
-    dispatch(GetLoggedUser());
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="IndividualChatPage">
@@ -118,7 +119,7 @@ export const IndividualChat = () => {
         </div>
         <Button
           variant="contained"
-          className="DisconnectBtn ThirdBackground"
+          className="DisconnectBtn"
           onClick={() => {
             LogOutApiRequest();
           }}
@@ -161,22 +162,22 @@ export const IndividualChat = () => {
                   >
                     <div className="messageInfo">
                       <p className="UserName">{el.senderId.UserName}</p>
-                      <p className="MessageDate">
-                        {el.date.toString().substring(0, 10) +
-                          " " +
-                          el.date.toString().substring(11, 16)}
-                      </p>
                     </div>
                     <div
                       key={i}
                       className={`MessageBubble  ${
                         el.senderId._id !== User._id
                           ? "PrimaryBackground"
-                          : "ThirdBackground"
+                          : "SecondairyBackground"
                       }`}
                     >
                       <p className="MessageTxt">{el.value}</p>
                     </div>
+                    <p className="MessageDate">
+                      {el.date.toString().substring(0, 10) +
+                        " " +
+                        el.date.toString().substring(11, 16)}
+                    </p>
                   </div>
                 ) : (
                   <div
@@ -187,24 +188,24 @@ export const IndividualChat = () => {
                         : "MessageRight"
                     }`}
                   >
+                    <div className="messageInfo">
+                      <p className="UserName">{el.senderId.UserName}</p>
+                    </div>
                     <div
                       key={i}
                       className={`MessageBubble  ${
                         el.senderId._id !== User._id
                           ? "PrimaryBackground"
-                          : "ThirdBackground"
+                          : "SecondairyBackground"
                       }`}
                     >
                       <p className="MessageTxt">{el.value}</p>
                     </div>
-                    <div className="messageInfo">
-                      <p className="UserName">{el.senderId.UserName}</p>
-                      <p className="MessageDate">
-                        {el.date.toString().substring(0, 10) +
-                          " " +
-                          el.date.toString().substring(11, 16)}
-                      </p>
-                    </div>
+                    <p className="MessageDate">
+                      {el.date.toString().substring(0, 10) +
+                        " " +
+                        el.date.toString().substring(11, 16)}
+                    </p>
                   </div>
                 )
               )
@@ -238,7 +239,7 @@ export const IndividualChat = () => {
             <Button
               variant="contained"
               type="submit"
-              className="ThirdBackground SubmitBtn"
+              className="SubmitBtn"
               onClick={(e) => {
                 e.preventDefault();
                 if (Message !== "") {
@@ -256,7 +257,7 @@ export const IndividualChat = () => {
                 }
               }}
             >
-              Send
+              <SendIcon />
             </Button>
           </form>
         </div>
